@@ -5,12 +5,9 @@
 }
 .container{
 	display: flex;
+	gap: 20px;
 	max-width: 1440px;
-	background-color: rgb(230, 226, 226);
 	margin: 0 auto;
-}
-.items-cont{
-	margin-right: 10px;
 }
 h1{
 	text-align: center;
@@ -20,14 +17,77 @@ img{
 	width: 100px;
 	height: 100px;
 }
+.items-cont{
+	background-color: rgb(215, 215, 215);
+	padding: 10px 20px;
+}
 .item{
 	border: 1px solid gray;
 	display: flex;
 	flex-direction: column;
-	margin: 0 20px;
+	margin: 10px 0;
+}
+.amount{
+	margin-right: 20px;
+	font-size: 22px;
+	font-weight: 900;
 }
 .row1{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+}
+.row2{
+	display: flex;
+	justify-content: space-between;
+}
+.row1 p{
+	max-width: 400px;
+	margin-right: 20px;
+	margin-left: 10px;
+}
+.row2{
+	margin: 10px 20px;
+}
+.remove-btn{
+	border: none;
+	padding: 5px;
+	color: orange;
+	font-weight: 700;
+}
+.remove-btn i{
+	margin-right: 10px;
+}
+.remove-btn:hover{
+	background-color: orange;
+	color: white;
+}
+.btn{
+	background-color: orange;
+	border: none;
+	width: 30px;
+	height: 30px;
+	border-radius: 5px;
+	color: white;
+	font-size: 20px;
+}
+.btn:hover{
+	box-shadow: 2px 5px 21px 4px rgba(0,0,0,0.41);
+}
+.quantity{
+	margin: 0 10px;
+}
+
+
+.total{
+	background-color: rgb(215, 215, 215);
+}
+
+
+
+
+@media only screen and (max-width: 768px) {
+	.container{
+		flex-direction: column;
+	}
 }
