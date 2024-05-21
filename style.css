@@ -1,0 +1,33 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+.container{
+	display: flex;
+	max-width: 1440px;
+	background-color: rgb(230, 226, 226);
+	margin: 0 auto;
+}
+.items-cont{
+	margin-right: 10px;
+}
+h1{
+	text-align: center;
+	margin: 20px 0;
+}
+img{
+	width: 100px;
+	height: 100px;
+}
+.item{
+	border: 1px solid gray;
+	display: flex;
+	flex-direction: column;
+	margin: 0 20px;
+}
+.row1{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
