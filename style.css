@@ -32,6 +32,7 @@ img{
 	margin-right: 20px;
 	font-size: 22px;
 	font-weight: 900;
+	min-width: 70px;
 }
 .row1{
 	display: flex;
@@ -57,7 +58,7 @@ img{
 	font-weight: 700;
 }
 .remove-btn i{
-	margin-right: 10px;
+	margin-left: 10px;
 }
 .remove-btn:hover{
 	background-color: orange;
