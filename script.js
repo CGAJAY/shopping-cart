@@ -23,15 +23,11 @@ let products = [{
 	},
 ];
 
+let total = 0;
+let fullAmount = document.querySelector('.full-amount')
 
-
-
-
-products.forEach(product => {
-	let total = 0;
-	total += product.price;
-	let fullAmount = document.querySelector('.full-amount')
-	fullAmount.textContent = `$ ${total}`;
+products.forEach((product, index) => {
+	total += product.price * product.quantity;
 	const productDiv = document.createElement('div');
 	productDiv.classList.add('item');
 	const row1 = document.createElement('div');
@@ -57,44 +53,52 @@ products.forEach(product => {
 	productQuantity.classList.add('quantity');
 	const removeBtn = document.createElement('button');
 	removeBtn.classList.add('btn');
-	removeBtn.textContent = '-'
+	removeBtn.textContent = '-';
 
+	function render(){
+		console.log("Rendering");
+		productCost.textContent = `$ ${product.price}`;
+		productName.textContent = product.name;
+		productImage.src = product.image;
+		row1.appendChild(productImage);
+		row1.appendChild(productName);
+		row1.appendChild(productCost);
+		productDiv.appendChild(row1);
+		items.appendChild(productDiv);
+		btnCont.appendChild(addBtn);
+		btnCont.appendChild(productQuantity);
+		btnCont.appendChild(removeBtn);
+		deleteBtn.appendChild(deleteIcon);
+		row2.appendChild(deleteBtn);
+		row2.appendChild(btnCont);
+		productDiv.appendChild(row2);
+	}
 
-	productCost.textContent = `$ ${product.price}`;
-	productName.textContent = product.name;
-	productImage.src = product.image;
-	row1.appendChild(productImage);
-	row1.appendChild(productName);
-	row1.appendChild(productCost);
-	productDiv.appendChild(row1);
-	items.appendChild(productDiv);
-	btnCont.appendChild(addBtn);
-	btnCont.appendChild(productQuantity);
-	btnCont.appendChild(removeBtn);
-	deleteBtn.appendChild(deleteIcon);
-	row2.appendChild(deleteBtn);
-	row2.appendChild(btnCont);
-	productDiv.appendChild(row2);
-
+	render();
 	addBtn.addEventListener('click',() => {
 		product.quantity++;
 		productQuantity.textContent = product.quantity;
-		total = product.price * product.quantity;
+		total += product.price;
 		fullAmount.textContent = `$ ${total}`;
-		
 	});
+		
 
 	removeBtn.addEventListener('click',() => {
 		if(product.quantity > 1){
 			product.quantity--;
 			productQuantity.textContent = product.quantity;
-			total = product.price * product.quantity;
+			total -= product.price;
 			fullAmount.textContent = `$ ${total}`;
-		}
-	});
-	
-	// productQuantity.textContent = product.quantity;
-	
-});
+		} else {
+			products.splice(index, 1);
+			console.log(products);
+			products.forEach((product) => {
+				render();
+			});
+			
+        }
+    });
 
+    fullAmount.textContent = `$ ${total}`;
+});
 
