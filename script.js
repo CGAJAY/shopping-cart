@@ -1,135 +1,147 @@
-const items = document.querySelector(".items");
+class Product {
+	constructor(id, name, image, price) {
+		this.id = id;
+		this.name = name;
+		this.image = image;
+		this.price = price;
+	}
+}
 
-let products = [
-  {
-    id: 1,
-    name: "Fashion Unisex Military Arab Tactical Desert Shemagh KeffIyeh Scarf Shawl Neck Head Wrap Black White",
-    image:
-      "https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/48/647569/1.jpg?0630",
-    price: 5,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: "Annov 2 Slice Bread Toaster - 700W - White",
-    image:
-      "https://ke.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/09/7687951/1.jpg?0941",
-    price: 150,
-    quantity: 1,
-  },
-  {
-    id: 3,
-    name: "NIVEA Perfect & Radiant Even Tone Day And Night Cream For Women - 50ml",
-    image:
-      "https://ke.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/03/082586/1.jpg?3405",
-    price: 10,
-    quantity: 2,
-  },
+class ShoppingCartItem {
+	constructor(product, quantity) {
+		this.product = product;
+		this.quantity = quantity;
+	}
+
+	getTotalPrice() {
+		return this.product.price * this.quantity;
+	}
+}
+
+class ShoppingCart {
+	constructor() {
+		this.items = [];
+	}
+
+	addItem(product) {
+		const existingItem = this.items.find(
+			(item) => item.product.id === product.id
+		);
+		if (existingItem) {
+			existingItem.quantity++;
+		} else {
+			this.items.push(new ShoppingCartItem(product, 1));
+		}
+	}
+
+	removeItem(productId) {
+		this.items = this.items.filter(
+			(item) => item.product.id !== productId
+		);
+	}
+
+	decreaseItem(productId) {
+		const existingItem = this.items.find(
+			(item) => item.product.id === productId
+		);
+		if (existingItem) {
+			existingItem.quantity--;
+			if (existingItem.quantity <= 0) {
+				this.removeItem(productId);
+			}
+		}
+	}
+
+	getTotal() {
+		return this.items.reduce(
+			(total, item) => total + item.getTotalPrice(),
+			0
+		);
+	}
+
+	displayItems() {
+		const itemsContainer = document.querySelector(".items");
+		itemsContainer.innerHTML = "";
+		this.items.forEach((item) => {
+			const productDiv = document.createElement("div");
+			productDiv.classList.add("item");
+			productDiv.innerHTML = `
+                <div class="row1">
+                    <img src="${item.product.image}" alt="${item.product.name}">
+                    <div class="item-details">
+                        <p class="item-name">${item.product.name}</p>
+                        <span class="item-price">$${item.product.price}</span>
+                    </div>
+                </div>
+                <div class="row2">
+                    <span>Quantity: <span class="quantity">${item.quantity}</span></span>
+                    <button class="remove-btn">Remove</button>
+                    <button class="decrease-btn">-</button>
+                    <button class="increase-btn">+</button>
+                </div>
+            `;
+			itemsContainer.appendChild(productDiv);
+
+			// Add event listeners for buttons
+			productDiv
+				.querySelector(".remove-btn")
+				.addEventListener("click", () => {
+					this.removeItem(item.product.id);
+					this.updateDisplay();
+				});
+
+			productDiv
+				.querySelector(".decrease-btn")
+				.addEventListener("click", () => {
+					this.decreaseItem(item.product.id);
+					this.updateDisplay();
+				});
+
+			productDiv
+				.querySelector(".increase-btn")
+				.addEventListener("click", () => {
+					this.addItem(item.product);
+					this.updateDisplay();
+				});
+		});
+
+		document.querySelector(
+			".full-amount"
+		).textContent = `Total: $${this.getTotal()}`;
+	}
+
+	updateDisplay() {
+		this.displayItems();
+	}
+}
+
+// Sample Products
+const products = [
+	new Product(
+		1,
+		"Fashion Unisex Military Arab Tactical Desert Shemagh KeffIyeh Scarf Shawl Neck Head Wrap Black White",
+		"https://ke.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/48/647569/1.jpg?0630",
+		5
+	),
+	new Product(
+		2,
+		"Annov 2 Slice Bread Toaster - 700W - White",
+		"https://ke.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/09/7687951/1.jpg?0941",
+		150
+	),
+	new Product(
+		3,
+		"NIVEA Perfect & Radiant Even Tone Day And Night Cream For Women - 50ml",
+		"https://ke.jumia.is/unsafe/fit-in/150x150/filters:fill(white)/product/03/082586/1.jpg?3405",
+		10
+	),
 ];
 
-let total = 0;
-let fullAmount = document.querySelector(".full-amount");
-function popUpMessage(output) {
-  let message = output;
-  const popUp = document.createElement("pop-up");
-  popUp.innerHTML = `<h4>${message}</h4>`;
-  popUp.classList.add("pop-up");
-  items.appendChild(popUp);
-  setTimeout(() => {
-    popUp.classList.toggle("pop-down");
-  }, 1000);
-}
+// Create a shopping cart instance
+const cart = new ShoppingCart();
 
-function render(products) {
-  const productDiv = document.createElement("div");
-  if (products.length === 0) {
-    fullAmount.textContent = `$ ${total}`;
-    productDiv.innerHTML = `<h2>No products in the cart</h2>`;
-    items.appendChild(productDiv);
-    popUpMessage("No items");
-    return;
-  }
-  products.forEach((product, index) => {
-    total += product.price * product.quantity;
-    productDiv.classList.add("item");
-    const row1 = document.createElement("div");
-    row1.classList.add("row1");
-    const productImage = document.createElement("img");
-    const productName = document.createElement("p");
-    productName.classList.add("item-name");
-    const productCost = document.createElement("span");
-    productCost.classList.add("amount");
-    const row2 = document.createElement("div");
-    row2.classList.add("row2");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("remove-btn");
-    deleteBtn.textContent = "Remove";
-    const deleteIcon = document.createElement("i");
-    deleteIcon.classList.add("fa-solid", "fa-trash");
-    const btnCont = document.createElement("div");
-    const addBtn = document.createElement("button");
-    addBtn.classList.add("btn");
-    addBtn.textContent = "+";
-    const productQuantity = document.createElement("span");
-    productQuantity.textContent = product.quantity;
-    productQuantity.classList.add("quantity");
-    const removeBtn = document.createElement("button");
-    removeBtn.classList.add("btn");
-    removeBtn.textContent = "-";
+// Function to add sample products to the cart for demonstration
+products.forEach((product) => cart.addItem(product));
 
-    productCost.textContent = `$ ${product.price}`;
-    productName.textContent = product.name;
-    productImage.src = product.image;
-    row1.appendChild(productImage);
-    row1.appendChild(productName);
-    row1.appendChild(productCost);
-    productDiv.appendChild(row1);
-    items.appendChild(productDiv);
-    btnCont.appendChild(addBtn);
-    btnCont.appendChild(productQuantity);
-    btnCont.appendChild(removeBtn);
-    deleteBtn.appendChild(deleteIcon);
-    row2.appendChild(deleteBtn);
-    row2.appendChild(btnCont);
-    productDiv.appendChild(row2);
-
-    console.log(products);
-
-    addBtn.addEventListener("click", () => {
-      product.quantity++;
-      productQuantity.textContent = product.quantity;
-      total += product.price;
-      fullAmount.textContent = `$ ${total}`;
-      popUpMessage("Added");
-    });
-
-    removeBtn.addEventListener("click", () => {
-      if (product.quantity > 1) {
-        product.quantity--;
-        productQuantity.textContent = product.quantity;
-        total -= product.price;
-        fullAmount.textContent = `$ ${total}`;
-        popUpMessage("Cart updated");
-      } else {
-        products.splice(index, 1);
-        items.innerHTML = "";
-        total = 0;
-        popUpMessage("Removed");
-        render(products);
-      }
-    });
-
-    deleteBtn.addEventListener("click", () => {
-      products.splice(index, 1);
-      items.innerHTML = "";
-      total = 0;
-      console.log(products);
-      // console.log(total);
-      render(products);
-    });
-
-    fullAmount.textContent = `$ ${total}`;
-  });
-}
-
-render(products);
+// Display initial items in the cart
+cart.displayItems();
